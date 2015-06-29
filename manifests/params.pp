@@ -1,6 +1,8 @@
 # Parameters class.
 #
 class php::params {
+  $install_cli = false
+  $install_fpm_daemon = false
   case $::osfamily {
     'Debian': {
       $php_package_name = 'php5'

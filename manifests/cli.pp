@@ -8,9 +8,10 @@
 #
 class php::cli (
   $ensure           = 'installed',
-  $inifile          = $php::params::cli_inifile,
-  $cli_package_name = $::php::params::cli_package_name,
-) inherits ::php::params {
+  $inifile          = $::php::cli_inifile,
+  $cli_package_name = $::php::cli_package_name,
+) inherits ::php {
+
   package { $cli_package_name:
     ensure  => $ensure,
     require => File[$inifile],

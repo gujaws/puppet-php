@@ -107,19 +107,22 @@ define php::ini (
   $soap_wsdl_cache_enabled    = '1',
   $soap_wsdl_cache_dir        = '/tmp',
   $soap_wsdl_cache_ttl        = '86400',
+  $fpm_service_name           = $::php::fpm_service_name,
 ) {
 
-  include '::php::common'
+  if !defined(Class['php']) {
+    fail('You must include the php base class before using any php defined resources')
+  }
 
   file { $title:
     ensure  => $ensure,
     content => template($template),
+    require => Class['::php::packages']
   }
 
   # Reload FPM if present
   if defined(Class['::php::fpm::daemon']) {
-    File[$title] ~> Service[$php::params::fpm_service_name]
+    File[$title] ~> Service[$fpm_service_name]
   }
 
 }
-

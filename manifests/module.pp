@@ -11,27 +11,29 @@
 define php::module (
   $ensure = installed,
 ) {
-
-  include '::php::params'
+  if !defined(Class['php']) {
+    fail('You must include the php base class before using any php defined resources')
+  }
 
   # Manage the incorrect named php-apc package under Debians
   if ($title == 'apc') {
-    $package = $::php::params::php_apc_package_name
+    $package = $::php::php_apc_package_name
   } else {
     # Hack to get pkg prefixes to work, i.e. php56-mcrypt title
     $package = $title ? {
       /^php/  => $title,
-      default => "${::php::params::php_package_name}-${title}"
+      default => "${::php::php_package_name}-${title}"
     }
   }
 
   package { $package:
-    ensure => $ensure,
+    ensure  => $ensure,
+    require => Class['::php::packages'],
   }
 
   # Reload FPM if present
   if defined(Class['::php::fpm::daemon']) {
-    Package[$package] ~> Service[$php::params::fpm_service_name]
+    Package[$package] ~> Service[$php::fpm_service_name]
   }
 
 }

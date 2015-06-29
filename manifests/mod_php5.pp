@@ -9,12 +9,12 @@
 #
 class php::mod_php5 (
   $ensure             = 'installed',
-  $inifile            = '/etc/php.ini',
-  $php_package_name   = $::php::params::php_package_name,
-  $httpd_package_name = $::php::params::httpd_package_name,
-  $httpd_service_name = $::php::params::httpd_service_name,
-  $httpd_conf_dir     = $::php::params::httpd_conf_dir,
-) inherits ::php::params {
+  $inifile            = $::php::cli_inifile,
+  $php_package_name   = $::php::php_package_name,
+  $httpd_package_name = $::php::httpd_package_name,
+  $httpd_service_name = $::php::httpd_service_name,
+  $httpd_conf_dir     = $::php::httpd_conf_dir,
+) inherits ::php {
 
   package { $php_package_name:
     ensure  => $ensure,

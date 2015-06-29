@@ -7,13 +7,13 @@
 #
 class php::fpm::daemon (
   $ensure                      = 'present',
-  $package_name                = $::php::params::fpm_package_name,
-  $service_name                = $::php::params::fpm_service_name,
-  $service_restart             = $::php::params::fpm_service_restart,
-  $fpm_pool_dir                = $::php::params::fpm_pool_dir,
-  $fpm_conf_dir                = $::php::params::fpm_conf_dir,
-  $error_log                   = $::php::params::fpm_error_log,
-  $pid                         = $::php::params::fpm_pid,
+  $package_name                = $::php::fpm_package_name,
+  $service_name                = $::php::fpm_service_name,
+  $service_restart             = $::php::fpm_service_restart,
+  $fpm_pool_dir                = $::php::fpm_pool_dir,
+  $fpm_conf_dir                = $::php::fpm_conf_dir,
+  $error_log                   = $::php::fpm_error_log,
+  $pid                         = $::php::fpm_pid,
   $syslog_facility             = 'daemon',
   $syslog_ident                = 'php-fpm',
   $log_level                   = 'notice',
@@ -27,7 +27,7 @@ class php::fpm::daemon (
   $log_owner                   = 'root',
   $log_group                   = false,
   $log_dir_mode                = '0770',
-) inherits ::php::params {
+) inherits ::php {
 
   # Hack-ish to default to user for group too
   $log_group_final = $log_group ? {

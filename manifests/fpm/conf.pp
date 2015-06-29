@@ -17,8 +17,8 @@
 #
 define php::fpm::conf (
   $ensure                    = 'present',
-  $package_name              = undef,
-  $service_name              = undef,
+  $package_name              = $::php::fpm_package_name,
+  $service_name              = $::php::fpm_service_name,
   $user                      = 'apache',
   $group                     = undef,
   $listen                    = '127.0.0.1:9000',
@@ -58,31 +58,23 @@ define php::fpm::conf (
   $error_log                 = true,
 ) {
 
-  include '::php::params'
+  if !defined(Class['php']) {
+    fail('You must include the php base class before using any php defined resources')
+  }
 
   $pool = $title
 
   # Hack-ish to default to user for group too
   $group_final = $group ? { undef => $user, default => $group }
 
-  # This is much easier from classes which inherit params...
-  $fpm_package_name = $package_name ? {
-    undef   => $::php::params::fpm_package_name,
-    default => $package_name,
-  }
-  $fpm_service_name = $service_name ? {
-    undef   => $::php::params::fpm_service_name,
-    default => $service_name,
-  }
-
-  file { "${php::params::fpm_pool_dir}/${pool}.conf":
+  file { "${::php::fpm_pool_dir}/${pool}.conf":
     ensure  => $ensure,
     content => template('php/fpm/pool.conf.erb'),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package[$fpm_package_name],
-    notify  => Service[$fpm_service_name],
+    require => Package[$package_name],
+    notify  => Service[$service_name],
   }
 
 }
